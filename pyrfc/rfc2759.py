@@ -130,6 +130,30 @@ def generate_authenticator_response(u_password, nt_response, peer_challenge, aut
     return "S=%s" % binascii.b2a_hex(digest2).upper()
 
 
+def generate_authenticator_response2(password_hash, nt_response, peer_challenge, auth_challenge, user_name):
+    """
+    :param u_password:
+    :param peer_challenge:
+    :param auth_challenge:
+    :param user_name:
+    :return: auth_response
+    """
+    magic1 = "\x4D\x61\x67\x69\x63\x20\x73\x65\x72\x76\x65\x72\x20\x74\x6F\x20\x63\x6C\x69\x65\x6E\x74\x20" \
+             "\x73\x69\x67\x6E\x69\x6E\x67\x20\x63\x6F\x6E\x73\x74\x61\x6E\x74"
+    magic2 = "\x50\x61\x64\x20\x74\x6F\x20\x6D\x61\x6B\x65\x20\x69\x74\x20\x64\x6F\x20\x6D\x6F\x72\x65\x20" \
+             "\x74\x68\x61\x6E\x20\x6F\x6E\x65\x20\x69\x74\x65\x72\x61\x74\x69\x6F\x6E"
+
+    password_hash_hash = nt_password_hash(password_hash)
+
+    digest = multi_sha(password_hash_hash, nt_response, magic1)
+
+    challenge = challenge_hash(peer_challenge, auth_challenge, user_name)
+
+    digest2 = multi_sha(digest, challenge, magic2)
+
+    return "S=%s" % binascii.b2a_hex(digest2).upper()
+
+
 def check_authenticator_response(u_password, nt_response, peer_challenge, auth_challenge, user_name, received_response):
     """
     RFC 2759
