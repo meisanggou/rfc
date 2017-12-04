@@ -16,7 +16,7 @@ if sys.version_info <= (2, 7):
     sys.exit(1)
 
 name = "pyrfc"
-version = "0.1.0"
+version = "0.1.1"
 url = "https://github.com/meisanggou/rfc"
 license = "MIT"
 author = "meisanggou"
